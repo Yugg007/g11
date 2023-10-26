@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Car Data Entry</title>
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input[type="number"] {
+            width: 100px;
+        }
+        .form-group input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<script>
+	   fetch('/getSessionAttribute')
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.text();
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        })
+        .then(function(username) {
+            console.log('Welcome, ' + username + '!');
+            if(username == null){
+				window.location.href='/';
+			}
+        })	
+</script>
+<body>
+    <h1>Add car for sell...</h1>
+    
+    <div class="form-container">
+        <form action="insertCar" method="post">
+            <div class="form-group">
+                <label for="model">Model:</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="variant">Variant:</label>
+                <input type="text" id="variant" name="variant" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" required>
+            </div>
+            
+            <div class "form-group">
+                <label for="kilometers">Kilometers:</label>
+                <input type="number" id="kilometers" name="kilometers" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bodyCondition">Body Condition:</label>
+                <input type="number" id="bodyCondition" name="bodyCondition" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="wheelCondition">Wheel Condition:</label>
+                <input type="number" id="wheelCondition" name="wheelCondition" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="engineCondition">Engine Condition:</label>
+                <input type="number" id="engineCondition" name="engineCondition" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="batteryCondition">Battery Condition:</label>
+                <input type="number" id="batteryCondition" name="batteryCondition" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="overallCondition">Overall Condition:</label>
+                <input type="number" id="overallCondition" name="overallCondition" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

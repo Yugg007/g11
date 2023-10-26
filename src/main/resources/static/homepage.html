@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>List of Cars</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #carTable {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        #carTable th, #carTable td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #carTable th {
+            background-color: #f2f2f2;
+        }
+
+        #addCarButton {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #addCarButton:hover {
+            background-color: #45a049;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #005f75;
+        }
+
+        /* Style for filter inputs and button */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 10px auto;
+            max-width: 400px;
+        }
+
+        .filter-container > div {
+            margin: 5px;
+        }
+
+        .filter-container > div > label {
+            font-weight: bold;
+        }
+
+        .filter-container > div > input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .filter-container > div > button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-container > div > button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <br>
+    <button id="logout" style="float: right; margin-right: 10px;">Logout</button>
+    <button id="addCarButton">Add Car for Sale</button>
+    <br>
+    <form id="buyForm" action="buyCar" method="post" style="display: none;">
+        <input id="cid" name="cid">
+    </form>
+    <form id="logoutForm" action="logout" method="get" style="display: none;">
+    </form>
+
+    <div class="filter-container">
+        <div>
+            <label for="modelFilter">Model:</label>
+            <input type="text" id="modelFilter">
+        </div>
+        <div>
+            <label for="minPrice">Min Price:</label>
+            <input type="number" id="minPrice">
+        </div>
+        <div>
+            <label for="maxPrice">Max Price:</label>
+            <input type="number" id="maxPrice">
+        </div>
+        <div>
+            <label for="maxMileage">Max Mileage (Kilometers):</label>
+            <input type="number" id="maxMileage">
+        </div>
+        <div>
+            <button id="filterButton">Apply Filters</button>
+        </div>
+    </div>
+
+    <h1>List of Cars for Sale</h1>
+    <table id="carTable" border="1">
+        <thead>
+            <tr>
+                <th>Car ID</th>
+                <th>Model</th>
+                <th>Variant</th>
+                <th>Price</th>
+                <th>Year</th>
+                <th>Kilometers</th>
+                <th>Body Condition</th>
+                <th>Wheel Condition</th>
+                <th>Engine Condition</th>
+                <th>Battery Condition</th>
+                <th>Overall Condition</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+   fetch('/getSessionAttribute')
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.text();
+            } else {
+                throw Error('Failed to fetch data');
+            }
+        })
+        .then(function(username) {
+            console.log('Welcome, ' + username + '!');
+            if(username == null || username == ""){
+                window.location.href='/';
+            }
+        })
+
+
+        function fetchCarData() {
+            fetch('/cars') // Replace with the actual API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const carTable = document.getElementById('carTable');
+                    const tbody = carTable.getElementsByTagName('tbody')[0];
+                    tbody.innerHTML = ''; // Clear existing data
+
+                    data.forEach(car => {
+                        const row = tbody.insertRow();
+                        row.insertCell(0).textContent = car.id;
+                        row.insertCell(1).textContent = car.model;
+                        row.insertCell(2).textContent = car.variant;
+                        row.insertCell(3).textContent = car.price;
+                        row.insertCell(4).textContent = car.year;
+                        row.insertCell(5).textContent = car.kilometers;
+                        row.insertCell(6).textContent = car.bodyCondition;
+                        row.insertCell(7).textContent = car.wheelCondition;
+                        row.insertCell(8).textContent = car.engineCondition;
+                        row.insertCell(9).textContent = car.batteryCondition;
+                        row.insertCell(10).textContent = car.overallCondition;
+                        var buttonCell = row.insertCell(11);
+                        var button = document.createElement("button");
+                        button.textContent = "Buy Me"; // Set the button text
+                        button.addEventListener("click", function() {
+                            handleClick(car.id);
+                        });
+                        buttonCell.appendChild(button);
+                    });
+                });
+        }
+
+        document.getElementById('addCarButton').addEventListener('click', function() {
+            window.location.href='/addCar';
+        });
+
+        document.getElementById('logout').addEventListener('click', function() {
+            document.getElementById("logoutForm").submit();
+        });
+
+        document.getElementById('filterButton').addEventListener('click', function() {
+            applyFilters();
+        });
+
+        function handleClick(id) {
+            console.log(id);
+            document.getElementById("cid").value = id;
+            document.getElementById("buyForm").submit();
+        }
+
+        function applyFilters() {
+            // Implement filtering logic here
+            // Fetch cars with applied filters from the server
+            // Update the table with filtered data
+        }
+
+        fetchCarData();
+    </script>
+</body>
+</html>
